@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+    <style name="CollapseTextStyle">
+        <item name="android:textColor">@color/titleTextColor</item>
+    </style>
+
 </resources>
