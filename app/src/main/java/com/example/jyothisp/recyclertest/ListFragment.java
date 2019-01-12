@@ -39,7 +39,7 @@ public class ListFragment extends Fragment {
     FlagshipAdapter mFlagshipAdapter;
     ArrayList<Event> flagshipEvents;
 
-    int no_of_dept = 6;
+    int no_of_dept = 7;
     String LOG_TAG = "ListFragment";
 
     @Override
@@ -60,23 +60,10 @@ public class ListFragment extends Fragment {
         prepareFlagshipEvents();
 //        setupAutoScrollForFlagshipEvents();
 
-        mFlagshipRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), mFlagshipRecyclerView, new RecyclerTouchListener.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                View transView = view.findViewById(R.id.layout_with_bg);
-                animateToDetails(transView);
-            }
 
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-        }));
-
-
-        mEventRecyclers = new RecyclerView[6];
-        mEventsLists = new ArrayList[6];
-        mEventAdapters = new EventsAdapter[6];
+        mEventRecyclers = new RecyclerView[no_of_dept];
+        mEventsLists = new ArrayList[no_of_dept];
+        mEventAdapters = new EventsAdapter[no_of_dept];
         mRecyclerIDs = getResources().obtainTypedArray(R.array.departments_recycler_views);
         for (int i = 0; i < no_of_dept; i++) {
             mEventsLists[i] = new ArrayList<>();
