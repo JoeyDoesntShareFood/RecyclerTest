@@ -7,5 +7,6 @@
         <item>@id/departments_recycler_view_cs</item>
         <item>@id/departments_recycler_view_it</item>
         <item>@id/departments_recycler_view_me</item>
+        <item>@id/departments_recycler_view_se</item>
     </array>
 </resources>

@@ -8,9 +8,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -57,6 +60,19 @@ public class ListFragment extends Fragment {
         prepareFlagshipEvents();
 //        setupAutoScrollForFlagshipEvents();
 
+        mFlagshipRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), mFlagshipRecyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                View transView = view.findViewById(R.id.layout_with_bg);
+                animateToDetails(transView);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+
 
         mEventRecyclers = new RecyclerView[6];
         mEventsLists = new ArrayList[6];
@@ -78,6 +94,30 @@ public class ListFragment extends Fragment {
         prepareDepartments();
 
         return view;
+    }
+
+    private void animateToDetails(View view){
+//        TODO: Build version check.
+
+        setSharedElementReturnTransition(TransitionInflater.from(getContext()).inflateTransition(R.transition.shared));
+        setExitTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.no_transition));
+
+        EventDetailsFragment nextPage = new EventDetailsFragment();
+
+        nextPage.setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(R.transition.default_trans));
+        nextPage.setEnterTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.no_transition));
+
+        openDetails(nextPage, view);
+
+    }
+
+    private void openDetails(EventDetailsFragment nextPage, View view) {
+        String transName = getString(R.string.transition_string);
+        getFragmentManager().beginTransaction()
+                .addSharedElement(view, transName)
+                .replace(R.id.container, nextPage)
+                .addToBackStack("tab")
+                .commit();
     }
 
 

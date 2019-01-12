@@ -20,4 +20,5 @@
     <string name="department_name_it">Information Technology</string>
     <string name="department_name_me">Mechanical</string>
     <string name="department_name_eee">Electrical and Electronics</string>
+    <string name="department_name_se">Safety</string>
 </resources>
