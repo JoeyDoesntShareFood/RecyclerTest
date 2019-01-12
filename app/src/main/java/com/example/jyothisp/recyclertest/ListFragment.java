@@ -2,6 +2,8 @@ package com.example.jyothisp.recyclertest;
 
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -9,6 +11,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,12 +28,15 @@ import java.util.ArrayList;
  */
 public class ListFragment extends Fragment {
 
-    RecyclerView mDepartmentsRecyclerView, mFlagshipRecyclerView;
-    DepartmentsAdapter mVerticalAdapter;
+    RecyclerView mFlagshipRecyclerView;
+    EventsAdapter[] mEventAdapters;
+    RecyclerView[] mEventRecyclers;
+    ArrayList<Event>[] mEventsLists;
+    TypedArray mRecyclerIDs;
     FlagshipAdapter mFlagshipAdapter;
-    ArrayList<Department> departments;
     ArrayList<Event> flagshipEvents;
 
+    int no_of_dept = 6;
     String LOG_TAG = "ListFragment";
 
     @Override
@@ -37,15 +44,11 @@ public class ListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-
-        mDepartmentsRecyclerView = view.findViewById(R.id.recycler_view);
         mFlagshipRecyclerView = view.findViewById(R.id.flagship_recycler_view);
 
         flagshipEvents = new ArrayList<>();
-        departments = new ArrayList<>();
 
         mFlagshipAdapter = new FlagshipAdapter(flagshipEvents);
-        mVerticalAdapter = new DepartmentsAdapter(departments);
 
         mFlagshipRecyclerView.setLayoutManager(new CustomLinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         mFlagshipRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -53,26 +56,23 @@ public class ListFragment extends Fragment {
         mFlagshipRecyclerView.setNestedScrollingEnabled(false);
         prepareFlagshipEvents();
 //        setupAutoScrollForFlagshipEvents();
-        runAnimation(mFlagshipRecyclerView, mFlagshipAdapter);
-
-        mFlagshipRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-
-            }
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-
-            }
-        });
 
 
-        mDepartmentsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mDepartmentsRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mDepartmentsRecyclerView.setNestedScrollingEnabled(false);
-//        mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-        mDepartmentsRecyclerView.setAdapter(mVerticalAdapter);
+        mEventRecyclers = new RecyclerView[6];
+        mEventsLists = new ArrayList[6];
+        mEventAdapters = new EventsAdapter[6];
+        mRecyclerIDs = getResources().obtainTypedArray(R.array.departments_recycler_views);
+        for (int i = 0; i < no_of_dept; i++) {
+            mEventsLists[i] = new ArrayList<>();
+            int id = mRecyclerIDs.getResourceId(i, 0);
+            mEventRecyclers[i] = (RecyclerView) view.findViewById(id);
+            mEventAdapters[i] = new EventsAdapter(mEventsLists[i]);
+            mEventRecyclers[i].setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+            mEventRecyclers[i].setItemAnimator(new DefaultItemAnimator());
+            mEventRecyclers[i].setNestedScrollingEnabled(true);
+            mEventRecyclers[i].setAdapter(mEventAdapters[i]);
+
+        }
 
 
         prepareDepartments();
@@ -94,12 +94,12 @@ public class ListFragment extends Fragment {
             public void run() {
                 if (count < mFlagshipAdapter.getItemCount()) {
 
-                    if(count==mFlagshipAdapter.getItemCount()-1){
+                    if (count == mFlagshipAdapter.getItemCount() - 1) {
                         flag = false;
-                    }else if(count == 0){
+                    } else if (count == 0) {
                         flag = true;
                     }
-                    if(flag) count++;
+                    if (flag) count++;
                     else count--;
 
                     mFlagshipRecyclerView.smoothScrollToPosition(count);
@@ -118,13 +118,11 @@ public class ListFragment extends Fragment {
     }
 
     private void prepareDepartments() {
-        departments.add(new Department("CS", placeHolderEvents()));
-        departments.add(new Department("EC", placeHolderEvents()));
-        departments.add(new Department("EEE", placeHolderEvents()));
-        departments.add(new Department("MEC", placeHolderEvents()));
-        departments.add(new Department("IT", placeHolderEvents()));
-        departments.add(new Department("CE", placeHolderEvents()));
-        mVerticalAdapter.notifyDataSetChanged();
+        for (int i = 0; i < no_of_dept; i++) {
+            mEventsLists[i].addAll(placeHolderEvents());
+            mEventAdapters[i].notifyDataSetChanged();
+        }
+
     }
 
 
@@ -137,7 +135,7 @@ public class ListFragment extends Fragment {
         return list;
     }
 
-    private void runAnimation(RecyclerView recyclerView, RecyclerView.Adapter adapter){
+    private void runAnimation(RecyclerView recyclerView, RecyclerView.Adapter adapter) {
         Context context = recyclerView.getContext();
         LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_anim);
         recyclerView.setAdapter(adapter);
