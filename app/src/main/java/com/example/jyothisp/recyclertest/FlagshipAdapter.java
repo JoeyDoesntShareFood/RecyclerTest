@@ -72,6 +72,7 @@ public class FlagshipAdapter extends RecyclerView.Adapter<FlagshipAdapter.Flagsh
         Event event = eventArrayList.get(i);
         flagshipHolder.titleTextView.setText(event.getmTitle());
         flagshipHolder.titleTextView.setTag(i);
+        flagshipHolder.itemView.setTransitionName("flagship" + i);
         Log.d(LOG_TAG, "View holder bound" + viewHolderList.size());
     }
 

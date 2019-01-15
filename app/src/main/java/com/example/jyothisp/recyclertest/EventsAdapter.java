@@ -1,9 +1,12 @@
 package com.example.jyothisp.recyclertest;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,7 @@ import java.util.List;
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHolder> {
 
     int lastPosition = -1;
+    int index = -1;
     private ArrayList<Event> eventArrayList;
 
 
@@ -46,6 +50,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
      */
     public EventsAdapter(ArrayList<Event> eventArrayList) {
         this.eventArrayList = eventArrayList;
+    }
+
+    public EventsAdapter(ArrayList<Event> eventArrayList, int index) {
+        this.eventArrayList = eventArrayList;
+        this.index = index;
     }
 
 
@@ -85,13 +94,20 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         Event event = eventArrayList.get(i);
         viewHolder.titleTextView.setText(event.getmTitle());
         viewHolder.messageTextVeiw.setText(event.getmMessage());
+        viewHolder.itemView.setTransitionName("transition" + i);
         viewHolder.titleTextView.setTag(i);
         Animation animation = AnimationUtils.loadAnimation(viewHolder.titleTextView.getContext(),
                 (i > lastPosition) ? R.anim.up_from_bottom
                         : R.anim.down_from_top);
         viewHolder.itemView.startAnimation(animation);
+        viewHolder.itemView.setTransitionName("transition" + index + i);
         lastPosition = i;
+
     }
+
+
+
+
 
     @Override
     public int getItemCount() {

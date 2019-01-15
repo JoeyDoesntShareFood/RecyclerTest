@@ -58,6 +58,17 @@ public class ListFragment extends Fragment {
         mFlagshipRecyclerView.setAdapter(mFlagshipAdapter);
         mFlagshipRecyclerView.setNestedScrollingEnabled(false);
         prepareFlagshipEvents();
+        mFlagshipRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), mFlagshipRecyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                animateToDetails(view);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
 //        setupAutoScrollForFlagshipEvents();
 
 
@@ -69,11 +80,22 @@ public class ListFragment extends Fragment {
             mEventsLists[i] = new ArrayList<>();
             int id = mRecyclerIDs.getResourceId(i, 0);
             mEventRecyclers[i] = (RecyclerView) view.findViewById(id);
-            mEventAdapters[i] = new EventsAdapter(mEventsLists[i]);
+            mEventAdapters[i] = new EventsAdapter(mEventsLists[i], i);
             mEventRecyclers[i].setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
             mEventRecyclers[i].setItemAnimator(new DefaultItemAnimator());
             mEventRecyclers[i].setNestedScrollingEnabled(true);
             mEventRecyclers[i].setAdapter(mEventAdapters[i]);
+            mEventRecyclers[i].addOnItemTouchListener(new RecyclerTouchListener(getContext(), mEventRecyclers[i], new RecyclerTouchListener.ClickListener() {
+                @Override
+                public void onClick(View view, int position) {
+                    animateToDetails(view);
+                }
+
+                @Override
+                public void onLongClick(View view, int position) {
+
+                }
+            }));
 
         }
 
