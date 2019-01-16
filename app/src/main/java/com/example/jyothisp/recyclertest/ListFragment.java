@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ScrollView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -245,7 +244,7 @@ public class ListFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot event : dataSnapshot.getChildren()) {
-                    flagshipEvents.add(new Event(event.getKey(), (String) event.child("caption").getValue()));
+                    flagshipEvents.add(new Event(event.getKey(), (String) event.child("caption").getValue() ));
                     Log.e("Event:", event.getKey());
                     mFlagshipAdapter.notifyDataSetChanged();
                 }
@@ -271,7 +270,7 @@ public class ListFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot event : dataSnapshot.getChildren()) {
-                        mEventsLists[cur].add(new Event(event.getKey(), (String) event.child("caption").getValue()));
+                        mEventsLists[cur].add(new Event(event.getKey(), (String) event.child("caption").getValue() , (String) event.child("description").getValue() , (String) event.child("rules").getValue() , (String) event.child("prize1").getValue(), (String) event.child("prize2").getValue(), (String) event.child("prize3").getValue() , (String) event.child("fee").getValue())  );
                         Log.e("Event:", event.getKey());
                         mEventAdapters[cur].notifyDataSetChanged();
                     }

@@ -110,7 +110,7 @@ public class EventDetailsFragment extends android.support.v4.app.Fragment {
     }
 
     private void animateCardExpansion(final TextView content, final TextView button) {
-        int maxLines = (content.getMaxLines() == 2) ? 50 : 2;
+        int maxLines = (content.getMaxLines() == 2) ? 75 : 2;
         TextUtils.TruncateAt ellipseSize = (content.getMaxLines() == 2) ? null : TextUtils.TruncateAt.END; //3 -> END
         final int stringID = (content.getMaxLines() == 2) ? R.string.text_show_less : R.string.text_show_more;
         content.setEllipsize(ellipseSize);
