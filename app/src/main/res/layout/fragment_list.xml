@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/events_bg_vector"
     tools:context=".ListFragment">
 
     <LinearLayout
@@ -19,13 +20,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
 
             <TextView
                 android:id="@+id/departments_name_ec"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                style="@style/departmentNameStyle"
                 android:text="@string/department_name_ec" />
 
             <android.support.v7.widget.RecyclerView
@@ -43,9 +43,7 @@
 
             <TextView
                 android:id="@+id/departments_name_eee"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                style="@style/departmentNameStyle"
                 android:text="@string/department_name_eee" />
 
             <android.support.v7.widget.RecyclerView
@@ -63,9 +61,7 @@
 
             <TextView
                 android:id="@+id/departments_name_ce"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                style="@style/departmentNameStyle"
                 android:text="@string/department_name_ce" />
 
             <android.support.v7.widget.RecyclerView
@@ -83,9 +79,7 @@
 
             <TextView
                 android:id="@+id/departments_name_cs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                style="@style/departmentNameStyle"
                 android:text="@string/department_name_cs" />
 
             <android.support.v7.widget.RecyclerView
@@ -104,9 +98,7 @@
 
             <TextView
                 android:id="@+id/departments_name_it"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                style="@style/departmentNameStyle"
                 android:text="@string/department_name_it" />
 
             <android.support.v7.widget.RecyclerView
@@ -124,9 +116,7 @@
 
             <TextView
                 android:id="@+id/departments_name_me"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                style="@style/departmentNameStyle"
                 android:text="@string/department_name_me" />
 
             <android.support.v7.widget.RecyclerView
@@ -143,9 +133,7 @@
 
             <TextView
                 android:id="@+id/departments_name_se"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                style="@style/departmentNameStyle"
                 android:text="@string/department_name_se" />
 
             <android.support.v7.widget.RecyclerView

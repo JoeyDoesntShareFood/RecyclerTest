@@ -68,6 +68,21 @@ public class ListFragment extends Fragment {
         mFlagshipRecyclerView.setNestedScrollingEnabled(false);
         prepareFlagshipEvents();
         experimentalAutoScroll(0);
+        mFlagshipRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), mFlagshipRecyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+
+                Event clickedEvent = mFlagshipAdapter.getEventAtIndex(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("event", clickedEvent);
+                animateToDetails(view, bundle);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
         mFlagshipRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -236,17 +251,32 @@ public class ListFragment extends Fragment {
     }
 
     private void prepareFlagshipEvents() {
-        final int cur = 3;
-        List<String> events = Arrays.asList("ee", "ec", "ce", "cs", "it", "me", "se");
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference event_ref = database.getReference().child("events").child(events.get(3));
-        event_ref.addValueEventListener(new ValueEventListener() {
+        DatabaseReference event_ref = database.getReference().child("events").child("co");
+        event_ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot event : dataSnapshot.getChildren()) {
-                    flagshipEvents.add(new Event(event.getKey(), (String) event.child("caption").getValue() ));
-                    Log.e("Event:", event.getKey());
+                    ArrayList<Coordinator> coordinators  = new ArrayList<>();
+                    for (DataSnapshot coordinator : event.child("coordinators").getChildren()) {
+                        coordinators.add(coordinator.getValue(Coordinator.class));
+                    }
+
+                    flagshipEvents.add(new Event(event.getKey()
+                            , (String) event.child("caption").getValue()
+                            , (String) event.child("description").getValue()
+                            , (String) event.child("rules").getValue()
+                            , (String) event.child("prize1").getValue()
+                            , (String) event.child("prize2").getValue()
+                            , (String) event.child("prize3").getValue()
+                            , (String) event.child("fee").getValue()
+                            , (String) event.child("registration").getValue()
+                            , coordinators.get(0)
+                            , coordinators.get(1))  );
+//                        Log.e("Event:", event.getKey() );
                     mFlagshipAdapter.notifyDataSetChanged();
+                    //hi
+
                 }
             }
 
@@ -256,7 +286,10 @@ public class ListFragment extends Fragment {
 
 
         });
-    }
+        mFlagshipAdapter.notifyDataSetChanged();
+
+
+}
 
 
 
@@ -283,6 +316,7 @@ public class ListFragment extends Fragment {
                                 , (String) event.child("prize2").getValue()
                                 , (String) event.child("prize3").getValue()
                                 , (String) event.child("fee").getValue()
+                                , (String) event.child("registration").getValue()
                                 , coordinators.get(0)
                                 , coordinators.get(1))  );
 //                        Log.e("Event:", event.getKey() );

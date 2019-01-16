@@ -85,6 +85,9 @@ public class EventDetailsFragment extends android.support.v4.app.Fragment {
         TextView prizeTextThree = view.findViewById(R.id.event_prize_three_text);
         TextView coordinatorTextOne = view.findViewById(R.id.coordinator_name_text_one);
         TextView coordinatorTextTwo = view.findViewById(R.id.coordinator_name_text_two);
+        TextView feesText = view.findViewById(R.id.reg_fee_text_view);
+        TextView statusText = view.findViewById(R.id.reg_status_text_view);
+        CardView registerButton = view.findViewById(R.id.register_btn);
         CardView prizeCardOne = view.findViewById(R.id.prize_one_card);
         CardView prizeCardTwo = view.findViewById(R.id.prize_two_card);
         CardView prizeCardThree = view.findViewById(R.id.prize_three_card);
@@ -92,6 +95,7 @@ public class EventDetailsFragment extends android.support.v4.app.Fragment {
         CardView coordinatorCardTwo = view.findViewById(R.id.coordinator_card_two);
         CardView rulesCard = view.findViewById(R.id.rules_card);
         CardView rulesTitleCard = view.findViewById(R.id.rules_title_card);
+
 
         descriptionText.setText(description);
         rulesText.setText(rules);
@@ -155,42 +159,69 @@ public class EventDetailsFragment extends android.support.v4.app.Fragment {
         TextView prizeTextThree = view.findViewById(R.id.event_prize_three_text);
         TextView coordinatorTextOne = view.findViewById(R.id.coordinator_name_text_one);
         TextView coordinatorTextTwo = view.findViewById(R.id.coordinator_name_text_two);
+        TextView feesText = view.findViewById(R.id.reg_fee_text_view);
+        TextView statusText = view.findViewById(R.id.reg_status_text_view);
+        CardView registerButton = view.findViewById(R.id.register_btn);
         CardView prizeCardOne = view.findViewById(R.id.prize_one_card);
         CardView prizeCardTwo = view.findViewById(R.id.prize_two_card);
         CardView prizeCardThree = view.findViewById(R.id.prize_three_card);
         CardView coordinatorCardOne = view.findViewById(R.id.coordinator_card_one);
         CardView coordinatorCardTwo = view.findViewById(R.id.coordinator_card_two);
+        CardView coordinatorContainer = view.findViewById(R.id.coordinator_container);
         CardView rulesCard = view.findViewById(R.id.rules_card);
         CardView rulesTitleCard = view.findViewById(R.id.rules_title_card);
 
+        String fee = event.getmFee();
+        if (fee.matches("[0-9]+"))
+            fee = "₹" + fee;
+        feesText.setText(fee);
+        statusText.setText(event.getmStatus());
         descriptionText.setText(event.getmDescription());
         rulesText.setText(rules);
         prizeTextOne.setText(prize1);
         prizeTextTwo.setText(prize2);
         prizeTextThree.setText(prize3);
-        coordinatorTextOne.setText(event.getCoordinator1().getName());
-        coordinatorTextTwo.setText(event.getmCoordinator2().getName());
+        int i = 0;
+        if (event.getCoordinator1().getName().equals("")){
+            coordinatorCardOne.setVisibility(View.GONE);
+            i++;
+        }
+        else {
+            coordinatorTextOne.setText(event.getCoordinator1().getName());
+            coordinatorCardOne.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getContext(), "" + coordinatorPhoneOne, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    String uri = "tel:" + coordinatorPhoneOne.trim();
+                    intent.setData(Uri.parse(uri));
+                    startActivity(intent);
+                }
+            });
+        }
 
-        coordinatorCardOne.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(), "" + coordinatorPhoneOne, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                String uri = "tel:" + coordinatorPhoneOne.trim();
-                intent.setData(Uri.parse(uri));
-                startActivity(intent);
-            }
-        });
-        coordinatorCardTwo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(), "" + coordinatorPhoneTwo, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                String uri = "tel:" + coordinatorPhoneTwo.trim();
-                intent.setData(Uri.parse(uri));
-                startActivity(intent);
-            }
-        });
+        if (event.getmCoordinator2().getName().equals("")){
+            coordinatorCardTwo.setVisibility(View.GONE);
+            i++;
+        }
+        else {
+            coordinatorTextTwo.setText(event.getmCoordinator2().getName());
+
+            coordinatorCardTwo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getContext(), "" + coordinatorPhoneTwo, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    String uri = "tel:" + coordinatorPhoneTwo.trim();
+                    intent.setData(Uri.parse(uri));
+                    startActivity(intent);
+                }
+            });
+        }
+
+        if (i==2)
+            coordinatorContainer.setVisibility(View.GONE);
+
 
 
         rulesCard.setVisibility((rules.equals("")) ? View.GONE : View.VISIBLE);

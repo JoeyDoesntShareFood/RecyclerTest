@@ -31,6 +31,10 @@ public class FlagshipAdapter extends RecyclerView.Adapter<FlagshipAdapter.Flagsh
 
     public FlagshipAdapter(){}
 
+    public Event getEventAtIndex(int position) {
+        return eventArrayList.get(position);
+    }
+
 
     public class FlagshipHolder extends RecyclerView.ViewHolder {
 

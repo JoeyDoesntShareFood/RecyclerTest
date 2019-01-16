@@ -5,11 +5,11 @@ import java.io.Serializable;
 public class Event implements Serializable {
 
     private String mTitle, mMessage, mDescription, mRules , photoURl;
-    private String mPrize1, mPrize2, mPrize3, mFee ;
+    private String mPrize1, mPrize2, mPrize3, mFee , mStatus;
     private Coordinator coordinator1, mCoordinator2;
     //TODO: do something about the description of the event.
 
-    public Event(String title, String message, String mDescription, String mRules, String mPrize1, String mPrize2, String mPrize3, String mFee, Coordinator coordinator1, Coordinator mCoordinator2) {
+    public Event(String title, String message, String mDescription, String mRules, String mPrize1, String mPrize2, String mPrize3, String mFee, String mStatus, Coordinator coordinator1, Coordinator mCoordinator2) {
         mTitle = title;
         mMessage = message;
         this.mDescription = mDescription;
@@ -19,6 +19,7 @@ public class Event implements Serializable {
         this.mPrize2 = mPrize2;
         this.mPrize3 = mPrize3;
         this.mFee = mFee;
+        this.mStatus = mStatus;
         this.coordinator1 = coordinator1;
         this.mCoordinator2 = mCoordinator2;
     }
@@ -88,6 +89,10 @@ public class Event implements Serializable {
 
     public Coordinator getmCoordinator2() {
         return mCoordinator2;
+    }
+
+    public String getmStatus() {
+        return mStatus;
     }
 
 //    public class Coordinator {
