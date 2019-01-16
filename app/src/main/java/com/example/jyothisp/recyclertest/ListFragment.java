@@ -273,6 +273,7 @@ public class ListFragment extends Fragment {
                         mEventsLists[cur].add(new Event(event.getKey(), (String) event.child("caption").getValue() , (String) event.child("description").getValue() , (String) event.child("rules").getValue() , (String) event.child("prize1").getValue(), (String) event.child("prize2").getValue(), (String) event.child("prize3").getValue() , (String) event.child("fee").getValue())  );
                         Log.e("Event:", event.getKey());
                         mEventAdapters[cur].notifyDataSetChanged();
+                        //hi
                     }
                 }
 
