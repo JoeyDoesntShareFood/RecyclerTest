@@ -5,9 +5,23 @@ import java.io.Serializable;
 public class Event implements Serializable {
 
     private String mTitle, mMessage, mDescription, mRules , photoURl;
-    private String mPrize1, mPrize2, mPrize3, mFee;
+    private String mPrize1, mPrize2, mPrize3, mFee ;
+    private Coordinator coordinator1, mCoordinator2;
     //TODO: do something about the description of the event.
 
+    public Event(String title, String message, String mDescription, String mRules, String mPrize1, String mPrize2, String mPrize3, String mFee, Coordinator coordinator1, Coordinator mCoordinator2) {
+        mTitle = title;
+        mMessage = message;
+        this.mDescription = mDescription;
+        this.mRules = mRules;
+//        this.photoURl = photoURl;
+        this.mPrize1 = mPrize1;
+        this.mPrize2 = mPrize2;
+        this.mPrize3 = mPrize3;
+        this.mFee = mFee;
+        this.coordinator1 = coordinator1;
+        this.mCoordinator2 = mCoordinator2;
+    }
     public Event(String title, String message, String mDescription, String mRules, String mPrize1, String mPrize2, String mPrize3, String mFee) {
         mTitle = title;
         mMessage = message;
@@ -64,23 +78,32 @@ public class Event implements Serializable {
         return photoURl;
     }
 
-    public class coordinator {
-        private String name, phone_number;
-
-        public coordinator(String name, String phone_number) {
-            this.name = name;
-            this.phone_number = phone_number;
-        }
-
-        public String getPhone_number() {
-            return phone_number;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-
+    public String getmPrize3() {
+        return mPrize3;
     }
+
+    public Coordinator getCoordinator1() {
+        return coordinator1;
+    }
+
+    public Coordinator getmCoordinator2() {
+        return mCoordinator2;
+    }
+
+//    public class Coordinator {
+//        private String name, number;
+//
+//        public Coordinator(){}
+//
+//        public String getNumber() {
+//            return number;
+//        }
+//
+//        public String getName() {
+//            return name;
+//        }
+//
+//
+//    }
 
 }

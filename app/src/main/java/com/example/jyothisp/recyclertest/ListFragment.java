@@ -124,6 +124,7 @@ public class ListFragment extends Fragment {
         }
 
         prepareDepartments();
+//        prepareDepartmentsWithPlaceHolders();
 
         return view;
     }
@@ -187,7 +188,6 @@ public class ListFragment extends Fragment {
             @Override
             public void run() {
                 if (count < mFlagshipAdapter.getItemCount()) {
-                    mFlagshipRecyclerView.getScrollX();
                     if (count == mFlagshipAdapter.getItemCount() - 1) {
                         flag = false;
                     } else if (count == 0) {
@@ -270,10 +270,25 @@ public class ListFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot event : dataSnapshot.getChildren()) {
-                        mEventsLists[cur].add(new Event(event.getKey(), (String) event.child("caption").getValue() , (String) event.child("description").getValue() , (String) event.child("rules").getValue() , (String) event.child("prize1").getValue(), (String) event.child("prize2").getValue(), (String) event.child("prize3").getValue() , (String) event.child("fee").getValue())  );
-                        Log.e("Event:", event.getKey());
+                        ArrayList<Coordinator> coordinators  = new ArrayList<>();
+                        for (DataSnapshot coordinator : event.child("coordinators").getChildren()) {
+                            coordinators.add(coordinator.getValue(Coordinator.class));
+                        }
+
+                        mEventsLists[cur].add(new Event(event.getKey()
+                                , (String) event.child("caption").getValue()
+                                , (String) event.child("description").getValue()
+                                , (String) event.child("rules").getValue()
+                                , (String) event.child("prize1").getValue()
+                                , (String) event.child("prize2").getValue()
+                                , (String) event.child("prize3").getValue()
+                                , (String) event.child("fee").getValue()
+                                , coordinators.get(0)
+                                , coordinators.get(1))  );
+//                        Log.e("Event:", event.getKey() );
                         mEventAdapters[cur].notifyDataSetChanged();
                         //hi
+
                     }
                 }
 

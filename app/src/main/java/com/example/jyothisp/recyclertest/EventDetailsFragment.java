@@ -3,6 +3,8 @@ package com.example.jyothisp.recyclertest;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
@@ -42,43 +44,194 @@ public class EventDetailsFragment extends android.support.v4.app.Fragment {
         Bundle bundle = getArguments();
         Event event = (Event) bundle.getSerializable("event");
         String title = event.getmTitle();
-        animateViews(view);
-
-
-        MainActivity activity = (MainActivity) getActivity();
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        activity.setSupportActionBar(toolbar);
-        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        activity.getSupportActionBar().setHomeButtonEnabled(true);
-        activity.getSupportActionBar().setHomeAsUpIndicator(R.drawable.back);
-        setHasOptionsMenu(true);
-//        activity.getSupportActionBar().setHomeButtonEnabled(true);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         CollapsingToolbarLayout toolbarLayout = view.findViewById(R.id.collapsing);
-        toolbarLayout.setTitle(title);
-//        toolbarLayout.setCollapsedTitleTextColor(getColor(R.color.titleTextColor));
-
-
-        final LinearLayout registration = view.findViewById(R.id.event_registration_layout);
-        final LinearLayout description = view.findViewById(R.id.event_description_layout);
-
         TabLayout tabLayout = view.findViewById(R.id.tab);
-        final TabLayout.Tab regTab = tabLayout.newTab().setIcon(R.drawable.reg_icon);
-        final TabLayout.Tab detailsTab = tabLayout.newTab().setIcon(R.drawable.details_icon);
-        tabLayout.addTab(regTab);
-        tabLayout.addTab(detailsTab);
 
+        animateViews(view);
+        setupActionBar(toolbar);
+        toolbarLayout.setTitle(title);
+        setupTabs(tabLayout, view);
+//        populateViewsWithPlaceholders(event, view);
+        populateViews(event, view);
+        setupShowMoreFeature(view);
+
+
+
+        return view;
+    }
+
+    private void populateViewsWithPlaceholders(Event event, View view) {
+        String prize1 = "₹3000";
+        String prize2 = "₹2000";
+        String prize3 = "₹500";
+
+        String rules, description, coordinatorNameOne, coordinatorNameTwo;
+        final String coordinatorPhoneOne, coordinatorPhoneTwo;
+
+        rules = getString(R.string.placeholder_long);
+//        rules = "";
+        description = getString(R.string.placeholder_xl);
+        coordinatorNameOne = getString(R.string.placeholder_coordinator);
+        coordinatorNameTwo = getString(R.string.placeholder_coordinator);
+        coordinatorPhoneOne = "9497600590";
+        coordinatorPhoneTwo = "8921969033";
+
+        TextView descriptionText = view.findViewById(R.id.description_text_view);
+        TextView rulesText = view.findViewById(R.id.rules_text_view);
+        TextView prizeTextOne = view.findViewById(R.id.event_prize_one_text);
+        TextView prizeTextTwo = view.findViewById(R.id.event_prize_two_text);
+        TextView prizeTextThree = view.findViewById(R.id.event_prize_three_text);
+        TextView coordinatorTextOne = view.findViewById(R.id.coordinator_name_text_one);
+        TextView coordinatorTextTwo = view.findViewById(R.id.coordinator_name_text_two);
+        CardView prizeCardOne = view.findViewById(R.id.prize_one_card);
+        CardView prizeCardTwo = view.findViewById(R.id.prize_two_card);
+        CardView prizeCardThree = view.findViewById(R.id.prize_three_card);
+        CardView coordinatorCardOne = view.findViewById(R.id.coordinator_card_one);
+        CardView coordinatorCardTwo = view.findViewById(R.id.coordinator_card_two);
+        CardView rulesCard = view.findViewById(R.id.rules_card);
+        CardView rulesTitleCard = view.findViewById(R.id.rules_title_card);
+
+        descriptionText.setText(description);
+        rulesText.setText(rules);
+        prizeTextOne.setText(prize1);
+        prizeTextTwo.setText(prize2);
+        prizeTextThree.setText(prize3);
+        coordinatorTextOne.setText(coordinatorNameOne);
+        coordinatorTextTwo.setText(coordinatorNameTwo);
+
+        coordinatorCardOne.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "" + coordinatorPhoneOne, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                String uri = "tel:" + coordinatorPhoneOne.trim();
+                intent.setData(Uri.parse(uri));
+                startActivity(intent);
+            }
+        });
+        coordinatorCardTwo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "" + coordinatorPhoneTwo, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                String uri = "tel:" + coordinatorPhoneTwo.trim();
+                intent.setData(Uri.parse(uri));
+                startActivity(intent);
+            }
+        });
+
+
+        rulesCard.setVisibility((rules.equals("")) ? View.GONE : View.VISIBLE);
+        rulesTitleCard.setVisibility((rules.equals("")) ? View.GONE : View.VISIBLE);
+        prizeCardOne.setVisibility((prize1.equals("")) ? View.GONE : View.VISIBLE);
+        prizeCardTwo.setVisibility((prize2.equals("")) ? View.GONE : View.VISIBLE);
+        prizeCardThree.setVisibility((prize3.equals("")) ? View.GONE : View.VISIBLE);
+
+
+    }
+
+    private void populateViews(Event event, View view) {
+        String prize1 = event.getmPrize1();
+        String prize2 = event.getmPrize2();
+        String prize3 = event.getmPrize3();
+
+        String rules, description, coordinatorNameOne, coordinatorNameTwo;
+        final String coordinatorPhoneOne, coordinatorPhoneTwo;
+
+        rules = event.getmRules();
+//        rules = "";
+        description = event.getmDescription();
+        coordinatorNameOne = getString(R.string.placeholder_coordinator);
+        coordinatorNameTwo = getString(R.string.placeholder_coordinator);
+        coordinatorPhoneOne = event.getCoordinator1().getNumber();
+        coordinatorPhoneTwo = event.getmCoordinator2().getNumber();
+
+        TextView descriptionText = view.findViewById(R.id.description_text_view);
+        TextView rulesText = view.findViewById(R.id.rules_text_view);
+        TextView prizeTextOne = view.findViewById(R.id.event_prize_one_text);
+        TextView prizeTextTwo = view.findViewById(R.id.event_prize_two_text);
+        TextView prizeTextThree = view.findViewById(R.id.event_prize_three_text);
+        TextView coordinatorTextOne = view.findViewById(R.id.coordinator_name_text_one);
+        TextView coordinatorTextTwo = view.findViewById(R.id.coordinator_name_text_two);
+        CardView prizeCardOne = view.findViewById(R.id.prize_one_card);
+        CardView prizeCardTwo = view.findViewById(R.id.prize_two_card);
+        CardView prizeCardThree = view.findViewById(R.id.prize_three_card);
+        CardView coordinatorCardOne = view.findViewById(R.id.coordinator_card_one);
+        CardView coordinatorCardTwo = view.findViewById(R.id.coordinator_card_two);
+        CardView rulesCard = view.findViewById(R.id.rules_card);
+        CardView rulesTitleCard = view.findViewById(R.id.rules_title_card);
+
+        descriptionText.setText(event.getmDescription());
+        rulesText.setText(rules);
+        prizeTextOne.setText(prize1);
+        prizeTextTwo.setText(prize2);
+        prizeTextThree.setText(prize3);
+        coordinatorTextOne.setText(event.getCoordinator1().getName());
+        coordinatorTextTwo.setText(event.getmCoordinator2().getName());
+
+        coordinatorCardOne.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "" + coordinatorPhoneOne, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                String uri = "tel:" + coordinatorPhoneOne.trim();
+                intent.setData(Uri.parse(uri));
+                startActivity(intent);
+            }
+        });
+        coordinatorCardTwo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "" + coordinatorPhoneTwo, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                String uri = "tel:" + coordinatorPhoneTwo.trim();
+                intent.setData(Uri.parse(uri));
+                startActivity(intent);
+            }
+        });
+
+
+        rulesCard.setVisibility((rules.equals("")) ? View.GONE : View.VISIBLE);
+        rulesTitleCard.setVisibility((rules.equals("")) ? View.GONE : View.VISIBLE);
+        prizeCardOne.setVisibility((prize1.equals("")) ? View.GONE : View.VISIBLE);
+        prizeCardTwo.setVisibility((prize2.equals("")) ? View.GONE : View.VISIBLE);
+        prizeCardThree.setVisibility((prize3.equals("")) ? View.GONE : View.VISIBLE);
+
+
+    }
+
+    private void setupShowMoreFeature(View view) {
         CardView descriptionCard = view.findViewById(R.id.description_card);
+        CardView rulesCard = view.findViewById(R.id.rules_card);
 
         descriptionCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 TextView descriptionTextView = view.findViewById(R.id.description_text_view);
-                TextView showMoreTextView = view.findViewById(R.id.show_more);
+                TextView showMoreTextView = view.findViewById(R.id.description_show_more);
                 animateCardExpansion(descriptionTextView, showMoreTextView);
             }
         });
+        rulesCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TextView descriptionTextView = view.findViewById(R.id.rules_text_view);
+                TextView showMoreTextView = view.findViewById(R.id.rules_show_more);
+                animateCardExpansion(descriptionTextView, showMoreTextView);
+            }
+        });
+    }
+
+    private void setupTabs(TabLayout tabLayout, View view) {
+
+        final TabLayout.Tab regTab = tabLayout.newTab().setIcon(R.drawable.reg_icon);
+        final TabLayout.Tab detailsTab = tabLayout.newTab().setIcon(R.drawable.details_icon);
+        final LinearLayout registration = view.findViewById(R.id.event_registration_layout);
+        final LinearLayout description = view.findViewById(R.id.event_description_layout);
+        tabLayout.addTab(regTab);
+        tabLayout.addTab(detailsTab);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -105,14 +258,22 @@ public class EventDetailsFragment extends android.support.v4.app.Fragment {
             }
         });
 
+    }
 
-        return view;
+    private void setupActionBar(Toolbar toolbar) {
+        MainActivity activity = (MainActivity) getActivity();
+
+        activity.setSupportActionBar(toolbar);
+        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        activity.getSupportActionBar().setHomeButtonEnabled(true);
+        activity.getSupportActionBar().setHomeAsUpIndicator(R.drawable.back);
+        setHasOptionsMenu(true);
     }
 
     private void animateCardExpansion(final TextView content, final TextView button) {
-        int maxLines = (content.getMaxLines() == 2) ? 75 : 2;
-        TextUtils.TruncateAt ellipseSize = (content.getMaxLines() == 2) ? null : TextUtils.TruncateAt.END; //3 -> END
-        final int stringID = (content.getMaxLines() == 2) ? R.string.text_show_less : R.string.text_show_more;
+        int maxLines = (content.getMaxLines() == 4) ? 75 : 4;
+        TextUtils.TruncateAt ellipseSize = (content.getMaxLines() == 4) ? null : TextUtils.TruncateAt.END; //3 -> END
+        final int stringID = (content.getMaxLines() == 4) ? R.string.text_show_less : R.string.text_show_more;
         content.setEllipsize(ellipseSize);
         ObjectAnimator animator = ObjectAnimator.ofInt(content, "maxLines", maxLines);
         animator.setDuration(1000);

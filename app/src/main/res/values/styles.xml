@@ -6,8 +6,13 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="cardViewStyle">@style/CardView</item>
     </style>
 
+
+    <style name="cardViewStyle">
+
+    </style>
 
     <style name="CollapseTextStyle">
         <item name="android:textColor">@color/titleTextColor</item>
