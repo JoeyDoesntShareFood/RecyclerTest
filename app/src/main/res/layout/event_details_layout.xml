@@ -223,18 +223,39 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/cardVerticalMargin"
+                    android:id="@+id/description_card"
                     app:cardElevation="8dp"
                     app:cardBackgroundColor="@color/cardColor"
                     app:cardCornerRadius="0dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="16dp"
-                        android:text="@string/placeholder"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/cardTextSize" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:id="@+id/description_text_view"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="16dp"
+                            android:text="@string/placeholder_long"
+                            android:ellipsize="end"
+                            android:textColor="@android:color/white"
+                            android:maxLines="2"
+                            android:textSize="@dimen/cardTextSize" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_show_more"
+                            android:layout_marginBottom="8dp"
+                            android:id="@+id/show_more"
+                            android:layout_marginEnd="8dp"
+                            android:textColor="@color/titleTextColor"
+                            android:layout_gravity="end"/>
+                    </LinearLayout>
+
+
 
                 </android.support.v7.widget.CardView>
 

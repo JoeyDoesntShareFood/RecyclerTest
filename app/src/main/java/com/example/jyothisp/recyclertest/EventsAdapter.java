@@ -71,6 +71,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         notifyDataSetChanged();
     }
 
+    public ArrayList<Event> getEventArrayList() {
+        return eventArrayList;
+    }
+
+    public Event getEventAtIndex(int i){
+        return eventArrayList.get(i);
+    }
 
     @NonNull
     @Override
@@ -94,7 +101,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         Event event = eventArrayList.get(i);
         viewHolder.titleTextView.setText(event.getmTitle());
         viewHolder.messageTextVeiw.setText(event.getmMessage());
-        viewHolder.itemView.setTransitionName("transition" + i);
         viewHolder.titleTextView.setTag(i);
         Animation animation = AnimationUtils.loadAnimation(viewHolder.titleTextView.getContext(),
                 (i > lastPosition) ? R.anim.up_from_bottom
@@ -104,7 +110,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         lastPosition = i;
 
     }
-
 
 
 

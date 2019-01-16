@@ -17,6 +17,7 @@ public class FlagshipAdapter extends RecyclerView.Adapter<FlagshipAdapter.Flagsh
     private ArrayList<Event> eventArrayList;
 
     String LOG_TAG = "Flagship Adapter";
+    int currentPos =-1;
     private ArrayList<FlagshipHolder> viewHolderList;
 
     public ArrayList<FlagshipHolder> getViewHolderList() {
@@ -67,6 +68,7 @@ public class FlagshipAdapter extends RecyclerView.Adapter<FlagshipAdapter.Flagsh
         Log.d(LOG_TAG, "View holder detached" + viewHolderList.size());
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull FlagshipHolder flagshipHolder, int i) {
         Event event = eventArrayList.get(i);
@@ -80,7 +82,12 @@ public class FlagshipAdapter extends RecyclerView.Adapter<FlagshipAdapter.Flagsh
     public void onViewAttachedToWindow(@NonNull FlagshipHolder holder) {
         super.onViewAttachedToWindow(holder);
         viewHolderList.add(holder);
+        currentPos = holder.getAdapterPosition();
         Log.d(LOG_TAG, "View holder attached" + viewHolderList.size());
+    }
+
+    public int getCurrentPos() {
+        return currentPos;
     }
 
     @Override
@@ -88,4 +95,6 @@ public class FlagshipAdapter extends RecyclerView.Adapter<FlagshipAdapter.Flagsh
         return eventArrayList.size();
     }
 
+
+    //TODO: delete viewHolderList;
 }

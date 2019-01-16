@@ -12,6 +12,14 @@
     <string name="event_registration_title">Registration</string>
 
     <string name="placeholder">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean interdum nunc magna, ut semper erat rutrum vel. Phasellus dictum lacus et mollis aliquet. In vitae interdum diam.</string>
+    <string name="placeholder_long">"Get ready to face the challenge considering you have the best mind in civil engineering, We are geared up with the combo of questions varying from civil engineering, reasoning, logical quizzes and much more.\nLets make the quiz a happening event with the help of rapid fire rounds and the buzzer round.\n\nThe event will be conducted in two rounds;\nPrelims: A written test to test your knowledge based on basics of civil engineering, and logical puzzles.\n\nGrand finale: the most awaiting event of civil engineering, getting to the most exciting rounds and a final one on one interview quiz.\n\nNet Worth prizes: Rs. 4000"</string>
+    <string name="placeholder_xl">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ut nisi non nunc porta placerat. Mauris rutrum dolor ac dapibus varius. Integer ut lectus a diam auctor scelerisque ac a justo. Sed et lectus urna. Aliquam orci magna, eleifend ut vehicula eu, varius in ligula. Cras ante leo, faucibus eu nulla id, pulvinar efficitur mi. Ut mauris nulla, tempus nec placerat nec, ullamcorper in velit. Integer sit amet suscipit enim. Pellentesque in elit eleifend, convallis ante eu, posuere justo. Nulla dictum erat quam, id congue dolor convallis vel.
+
+Integer viverra, nunc at consectetur dapibus, lorem leo semper nisi, luctus tempor dui turpis vitae mauris. Fusce tincidunt pellentesque risus vel tincidunt. Sed pellentesque ac sapien eu venenatis. Mauris rhoncus orci in justo pretium finibus. Donec mollis dui et risus consectetur ullamcorper. Cras tempus fringilla interdum. Donec urna augue, vulputate vel rhoncus id, maximus nec nibh. Quisque eget orci velit. Curabitur sit amet eleifend nulla, non tempor erat. Proin lacinia tincidunt sollicitudin.
+
+Pellentesque metus augue, pharetra sed est ut, rutrum imperdiet augue. Nulla cursus sodales quam in finibus. In hac habitasse platea dictumst. Fusce vitae lectus et leo bibendum blandit ac in ligula. Nulla purus ipsum, ornare ut lorem vitae, fermentum tincidunt velit. Aliquam et sodales nisl, vitae rhoncus arcu. Mauris eu urna odio.
+
+Aliquam tincidunt tortor ut nisi consectetur, sit amet lobortis augue elementum. Donec risus lectus, eleifend ac bibendum in, condimentum vitae nunc. Nam tempor ultrices diam, vel mattis felis rutrum eget. Quisque tristique velit sit amet quam ornare, in blandit libero pulvinar. Aenean pharetra vestibulum velit, ut consectetur sem viverra ac. Cras laoreet vitae magna eget iaculis. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed mattis sit amet eros mollis elementum. Sed rutrum dolor mollis dui mattis vestibulum. Maecenas euismod erat velit, vitae ullamcorper nibh maximus ut.</string>
 
 
     <string name="department_name_cs">Computer Science</string>
@@ -21,4 +29,8 @@
     <string name="department_name_me">Mechanical</string>
     <string name="department_name_eee">Electrical and Electronics</string>
     <string name="department_name_se">Safety</string>
+
+
+    <string name="text_show_more">Show more.</string>
+    <string name="text_show_less">Show less.</string>
 </resources>

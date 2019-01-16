@@ -1,29 +1,35 @@
 package com.example.jyothisp.recyclertest;
 
 
-import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionInflater;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
-import android.widget.Adapter;
+import android.widget.ScrollView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 
 /**
@@ -38,6 +44,10 @@ public class ListFragment extends Fragment {
     TypedArray mRecyclerIDs;
     FlagshipAdapter mFlagshipAdapter;
     ArrayList<Event> flagshipEvents;
+    Handler mHandler;
+    Runnable mRunnable;
+    Boolean mIsScrolling = false;
+    Timer mTimer;
 
     int no_of_dept = 7;
     String LOG_TAG = "ListFragment";
@@ -58,18 +68,29 @@ public class ListFragment extends Fragment {
         mFlagshipRecyclerView.setAdapter(mFlagshipAdapter);
         mFlagshipRecyclerView.setNestedScrollingEnabled(false);
         prepareFlagshipEvents();
-        mFlagshipRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), mFlagshipRecyclerView, new RecyclerTouchListener.ClickListener() {
+        experimentalAutoScroll(0);
+        mFlagshipRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onClick(View view, int position) {
-                animateToDetails(view);
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                Log.e(LOG_TAG, "" + newState);
+                if (newState == SCROLL_STATE_DRAGGING){
+//                    mHandler.removeCallbacks(mRunnable);
+                    mTimer.cancel();
+                    mIsScrolling=false;
+                    Log.e(LOG_TAG, "removing");
+                }
+                if (newState == SCROLL_STATE_IDLE)
+                    if (!mIsScrolling)
+                        experimentalAutoScroll(mFlagshipAdapter.getCurrentPos());
+//                    mHandler.postDelayed(mRunnable, 3200);
             }
 
             @Override
-            public void onLongClick(View view, int position) {
-
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
             }
-        }));
-//        setupAutoScrollForFlagshipEvents();
+        });
 
 
         mEventRecyclers = new RecyclerView[no_of_dept];
@@ -85,10 +106,14 @@ public class ListFragment extends Fragment {
             mEventRecyclers[i].setItemAnimator(new DefaultItemAnimator());
             mEventRecyclers[i].setNestedScrollingEnabled(true);
             mEventRecyclers[i].setAdapter(mEventAdapters[i]);
+            final int finalI = i;
             mEventRecyclers[i].addOnItemTouchListener(new RecyclerTouchListener(getContext(), mEventRecyclers[i], new RecyclerTouchListener.ClickListener() {
                 @Override
                 public void onClick(View view, int position) {
-                    animateToDetails(view);
+                    Event clickedEvent = mEventAdapters[finalI].getEventAtIndex(position);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("event", clickedEvent);
+                    animateToDetails(view, bundle);
                 }
 
                 @Override
@@ -99,13 +124,35 @@ public class ListFragment extends Fragment {
 
         }
 
-
         prepareDepartments();
 
         return view;
     }
 
-    private void animateToDetails(View view){
+    private void prepareFlagshipEventsWithPlaceHolders() {
+        flagshipEvents.addAll(placeHolderEvents());
+    }
+
+    private void prepareDepartmentsWithPlaceHolders() {
+        for (int i = 0; i<no_of_dept; i++){
+            mEventsLists[i].addAll(placeHolderEvents());
+            mEventAdapters[i].notifyDataSetChanged();
+        }
+    }
+
+    private void removeFlagshipPlaceholders() {
+        flagshipEvents.clear();
+        mFlagshipAdapter.notifyDataSetChanged();
+    }
+
+    private void removeEventPlaceHolders() {
+        for (int i=0; i<no_of_dept; i++){
+            mEventsLists[i].clear();
+        }
+    }
+
+
+    private void animateToDetails(View view, Bundle bundle) {
 //        TODO: Build version check.
 
         setSharedElementReturnTransition(TransitionInflater.from(getContext()).inflateTransition(R.transition.shared));
@@ -113,9 +160,12 @@ public class ListFragment extends Fragment {
 
         EventDetailsFragment nextPage = new EventDetailsFragment();
 
+// IMPORTANT ERROR(Ignored to add firebase capabilities)-
         nextPage.setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(R.transition.default_trans));
         nextPage.setEnterTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.no_transition));
-
+        nextPage.setSharedElementReturnTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.no_transition));
+        nextPage.setExitTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.no_transition));
+        nextPage.setArguments(bundle);
         openDetails(nextPage, view);
 
     }
@@ -129,20 +179,16 @@ public class ListFragment extends Fragment {
                 .commit();
     }
 
-
-    private void setupAutoScrollForFlagshipEvents() {
-
-        //TODO: stop the process when the user scrolls through the cards.
-        final int speedScroll = 3200;
-        final Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
-            int count = 0;
+    private void experimentalAutoScroll(final int pos){
+        mTimer = new Timer();
+        TimerTask task = new TimerTask() {
+            int count = pos;
             boolean flag = true;
 
             @Override
             public void run() {
                 if (count < mFlagshipAdapter.getItemCount()) {
-
+                    mFlagshipRecyclerView.getScrollX();
                     if (count == mFlagshipAdapter.getItemCount() - 1) {
                         flag = false;
                     } else if (count == 0) {
@@ -152,23 +198,91 @@ public class ListFragment extends Fragment {
                     else count--;
 
                     mFlagshipRecyclerView.smoothScrollToPosition(count);
-                    handler.postDelayed(this, speedScroll);
+                }
+            }
+        };
+        mIsScrolling = true;
+        mTimer.scheduleAtFixedRate(task, 3000, 3200);
+    }
+
+    private void setupAutoScrollForFlagshipEvents(final int currentPos) {
+
+        //TODO: stop the process when the user scrolls through the cards.
+        final int speedScroll = 3200;
+        mHandler = new Handler();
+        mRunnable = new Runnable() {
+            int count = currentPos;
+            boolean flag = true;
+
+            @Override
+            public void run() {
+                if (count < mFlagshipAdapter.getItemCount()) {
+                    mFlagshipRecyclerView.getScrollX();
+                    if (count == mFlagshipAdapter.getItemCount() - 1) {
+                        flag = false;
+                    } else if (count == 0) {
+                        flag = true;
+                    }
+                    if (flag) count++;
+                    else count--;
+
+                    mFlagshipRecyclerView.smoothScrollToPosition(count);
+                    mHandler.postDelayed(this, speedScroll);
 
                 }
             }
         };
 
-        handler.postDelayed(runnable, speedScroll);
+        mHandler.postDelayed(mRunnable, speedScroll);
     }
 
     private void prepareFlagshipEvents() {
-        flagshipEvents.addAll(placeHolderEvents());
-        mFlagshipAdapter.notifyDataSetChanged();
+        final int cur = 3;
+        List<String> events = Arrays.asList("ee", "ec", "ce", "cs", "it", "me", "se");
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference event_ref = database.getReference().child("events").child(events.get(3));
+        event_ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot event : dataSnapshot.getChildren()) {
+                    flagshipEvents.add(new Event(event.getKey(), (String) event.child("caption").getValue()));
+                    Log.e("Event:", event.getKey());
+                    mFlagshipAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+
+
+        });
     }
+
+
 
     private void prepareDepartments() {
         for (int i = 0; i < no_of_dept; i++) {
-            mEventsLists[i].addAll(placeHolderEvents());
+            final int cur = i;
+            List<String> events = Arrays.asList("ee", "ec", "ce", "cs", "it", "me", "se");
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference event_ref = database.getReference().child("events").child(events.get(i));
+            event_ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot event : dataSnapshot.getChildren()) {
+                        mEventsLists[cur].add(new Event(event.getKey(), (String) event.child("caption").getValue()));
+                        Log.e("Event:", event.getKey());
+                        mEventAdapters[cur].notifyDataSetChanged();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+
+
+            });
             mEventAdapters[i].notifyDataSetChanged();
         }
 
@@ -184,14 +298,14 @@ public class ListFragment extends Fragment {
         return list;
     }
 
-    private void runAnimation(RecyclerView recyclerView, RecyclerView.Adapter adapter) {
-        Context context = recyclerView.getContext();
-        LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_anim);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutAnimation(controller);
-        adapter.notifyDataSetChanged();
-
-
+    @Override
+    public void onPause() {
+        super.onPause();
+        mTimer.cancel();
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
 }
